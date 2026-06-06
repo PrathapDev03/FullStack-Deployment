@@ -3,7 +3,7 @@ import axios from "axios";
 const API = axios.create({
 
   baseURL:
-    "http://localhost:5000/api"
+    "http://13.214.114.68:5000/api"
 
 });
 
@@ -29,9 +29,7 @@ API.interceptors.request.use(
 
   (error) => {
 
-    return Promise.reject(
-      error
-    );
+    return Promise.reject(error);
 
   }
 
