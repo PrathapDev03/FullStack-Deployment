@@ -1,142 +1,261 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
+import { useNotifications } from "../context/NotificationContext";
+import API from "../services/api";
 
 function AddEmployee() {
 
-  const [employee, setEmployee] = useState({
-    employeeId: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    department: "",
-    designation: "",
-    salary: ""
-  });
+  const navigate = useNavigate();
+
+  const { addNotification } =
+    useNotifications();
+
+  const [employee, setEmployee] =
+    useState({
+
+      name: "",
+      email: "",
+      department: "",
+      role: "",
+      salary: ""
+
+    });
 
   const handleChange = (e) => {
+
     setEmployee({
+
       ...employee,
-      [e.target.name]: e.target.value
+
+      [e.target.name]:
+      e.target.value
+
     });
+
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit =
+    async (e) => {
 
-    console.log(employee);
+      e.preventDefault();
 
-    alert("Employee Added Successfully");
-  };
+      try {
+
+        await API.post(
+
+          "/employees",
+
+          {
+
+            name:
+              employee.name,
+
+            email:
+              employee.email,
+
+            department:
+              employee.department,
+
+            designation:
+              employee.role,
+
+            salary:
+              Number(
+                employee.salary
+              )
+
+          }
+
+        );
+
+        addNotification(
+
+          `Employee ${employee.name} Added Successfully`
+
+        );
+
+        alert(
+          "Employee Added Successfully"
+        );
+
+        navigate(
+          "/employees"
+        );
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Failed to Add Employee"
+        );
+
+      }
+
+    };
 
   return (
+
     <MainLayout>
 
-      <h1 className="page-title">
-        Add Employee
-      </h1>
+      <div className="employee-form-page">
 
-      <div className="card employee-form-card">
+        <div className="hero-banner">
 
-        <form onSubmit={handleSubmit}>
-
-          <div className="form-grid">
-
-            <div className="form-group">
-              <label>Employee ID</label>
-              <input
-                type="number"
-                name="employeeId"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Phone</label>
-              <input
-                type="text"
-                name="phone"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Department</label>
-              <input
-                type="text"
-                name="department"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Designation</label>
-              <input
-                type="text"
-                name="designation"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Salary</label>
-              <input
-                type="number"
-                name="salary"
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-          </div>
-
-          <button
-            type="submit"
-            className="btn"
-          >
+          <h1>
             Add Employee
-          </button>
+          </h1>
 
-        </form>
+          <p>
+            Create a new employee
+            and save to database.
+          </p>
+
+        </div>
+
+        <div className="form-card">
+
+          <h2>
+            Employee Information
+          </h2>
+
+          <form
+            onSubmit={
+              handleSubmit
+            }
+          >
+
+            <div className="form-grid">
+
+              <div className="form-group">
+
+                <label>
+                  Full Name
+                </label>
+
+                <input
+                  type="text"
+                  name="name"
+                  value={employee.name}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Email
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  value={employee.email}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Department
+                </label>
+
+                <select
+                  name="department"
+                  value={employee.department}
+                  onChange={handleChange}
+                  required
+                >
+
+                  <option value="">
+                    Select Department
+                  </option>
+
+                  <option>
+                    AI Team
+                  </option>
+
+                  <option>
+                    Cloud Team
+                  </option>
+
+                  <option>
+                    HR Team
+                  </option>
+
+                  <option>
+                    DevOps Team
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Designation
+                </label>
+
+                <input
+                  type="text"
+                  name="role"
+                  value={employee.role}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Salary
+                </label>
+
+                <input
+                  type="number"
+                  name="salary"
+                  value={employee.salary}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-submit">
+
+              <button
+                type="submit"
+                className="btn"
+              >
+
+                Save Employee
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
 
       </div>
 
     </MainLayout>
+
   );
+
 }
 
 export default AddEmployee;

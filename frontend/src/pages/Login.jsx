@@ -1,104 +1,302 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
+import API from "../services/api";
 
 function Login() {
 
   const navigate = useNavigate();
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: ""
-  });
+  const [formData, setFormData] =
+    useState({
+
+      email: "",
+      password: ""
+
+    });
+
+  const [error, setError] =
+    useState("");
 
   const handleChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value
+
+    setFormData({
+
+      ...formData,
+
+      [e.target.name]:
+      e.target.value
+
     });
+
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit =
+    async (e) => {
 
-    console.log(loginData);
+      e.preventDefault();
 
-    alert("Login Successful");
+      try {
 
-    navigate("/dashboard");
-  };
+        const response =
+          await API.post(
+            "/login",
+            formData
+          );
+
+        if (
+          response.data.success
+        ) {
+
+          localStorage.setItem(
+
+            "token",
+
+            response.data.token
+
+          );
+
+          localStorage.setItem(
+
+            "user",
+
+            JSON.stringify(
+              response.data.user
+            )
+
+          );
+
+          localStorage.setItem(
+            "isLoggedIn",
+            "true"
+          );
+
+          navigate("/");
+
+        }
+
+        else {
+
+          setError(
+            response.data.message
+          );
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+        setError(
+          "Login Failed"
+        );
+
+      }
+
+    };
+
+    useEffect(() => {
+
+  document.body.classList.remove(
+    "dark-theme"
+  );
+
+}, []);
 
   return (
-    <div className="auth-container">
 
-      <div className="auth-card">
+    <div className="login-page">
 
-        <div className="auth-header">
+      <div className="login-container">
 
-          <h1>Admin Login</h1>
+        <div className="login-left-panel">
 
-          <p>
-            Access Employee Management Dashboard
-          </p>
+          <div>
+
+            <h1>
+              EmployeePro
+            </h1>
+
+            <h2>
+              Enterprise HR Portal
+            </h2>
+
+            <p>
+
+              Manage workforce,
+              visitors,
+              payroll,
+              analytics and
+              administration from
+              one centralized platform.
+
+            </p>
+
+          </div>
+
+          <div className="login-stats">
+
+            <div className="login-stat-card">
+
+              <h3>
+                500+
+              </h3>
+
+              <p>
+                Employees
+              </p>
+
+            </div>
+
+            <div className="login-stat-card">
+
+              <h3>
+                50+
+              </h3>
+
+              <p>
+                Departments
+              </p>
+
+            </div>
+
+            <div className="login-stat-card">
+
+              <h3>
+                98%
+              </h3>
+
+              <p>
+                Efficiency
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <div className="login-right-panel">
 
-          <div className="form-group">
+          <div className="login-form-card">
 
-            <label>Email</label>
+            <h2>
+              Welcome Back
+            </h2>
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter Email"
-              onChange={handleChange}
-              required
-            />
+            <p>
+              Login to EmployeePro
+            </p>
 
-          </div>
+            {
 
-          <div className="form-group">
+              error && (
 
-            <label>Password</label>
+                <div className="error-box">
 
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter Password"
-              onChange={handleChange}
-              required
-            />
+                  {error}
 
-          </div>
+                </div>
 
-          <button
-            type="submit"
-            className="btn auth-btn"
-          >
-            Login
-          </button>
+              )
 
-        </form>
+            }
 
-        <div className="auth-footer">
-
-          <p>
-            Visitor?
-            <span
-              className="auth-link"
-              onClick={() => navigate("/")}
+            <form
+              onSubmit={
+                handleSubmit
+              }
             >
-              Register Here
-            </span>
-          </p>
+
+              <div className="form-group">
+
+                <label>
+                  Email Address
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  value={
+                    formData.email
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Password
+                </label>
+
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter Password"
+                  value={
+                    formData.password
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <button
+                type="submit"
+                className="btn login-btn-v2"
+              >
+
+                Login
+
+              </button>
+
+            </form>
+
+            <div className="auth-switch">
+
+              <span>
+
+                Don't have an account?
+
+              </span>
+
+              <Link
+                to="/register"
+              >
+
+                Register Now
+
+              </Link>
+
+            </div>
+
+            <div className="login-footer">
+
+              EmployeePro HR Portal
+
+            </div>
+
+          </div>
 
         </div>
 
       </div>
 
     </div>
+
   );
+
 }
 
 export default Login;

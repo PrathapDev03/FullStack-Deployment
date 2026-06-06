@@ -1,27 +1,37 @@
-import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import TopNavbar from "../components/TopNavbar";
+import FooterNav from "../components/FooterNav";
 
 function MainLayout({ children }) {
 
   return (
-    <div className="layout">
 
-      <Sidebar />
+    <div className="app-container">
 
-      <div className="content">
+      {/* Header */}
 
-        <Header />
+      <Header />
 
-        <div className="page-content">
+      {/* Navigation */}
 
-          {children}
+      <TopNavbar />
 
-        </div>
+      {/* Main Content */}
 
-      </div>
+      <main className="main-content">
+
+        {children}
+
+      </main>
+
+      {/* Footer */}
+
+      <FooterNav />
 
     </div>
+
   );
+
 }
 
 export default MainLayout;

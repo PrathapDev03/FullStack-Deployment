@@ -1,79 +1,79 @@
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-} from "chart.js";
-
-import { Bar } from "react-chartjs-2";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip
+} from "recharts";
 
 function SalaryChart() {
 
-  const data = {
-    labels: [
-      "Developer",
-      "Tester",
-      "Manager",
-      "Data Scientist",
-      "DevOps"
-    ],
+  const data = [
 
-    datasets: [
-      {
-        label: "Average Salary",
-        data: [
-          700000,
-          500000,
-          1200000,
-          900000,
-          800000
-        ],
+    {
+      department: "AI",
+      salary: 700000
+    },
 
-        backgroundColor: [
-          "#3B82F6",
-          "#10B981",
-          "#F59E0B",
-          "#EF4444",
-          "#8B5CF6"
-        ]
-      }
-    ]
-  };
+    {
+      department: "Cloud",
+      salary: 850000
+    },
 
-  const options = {
-    responsive: true,
+    {
+      department: "Development",
+      salary: 650000
+    },
 
-    plugins: {
-      legend: {
-        position: "top"
-      }
+    {
+      department: "HR",
+      salary: 900000
     }
-  };
+
+  ];
 
   return (
-    <div className="card">
 
-      <h3>Salary Distribution</h3>
+    <div
+      style={{
+        width: "100%",
+        height: "350px"
+      }}
+    >
 
-      <Bar
-        data={data}
-        options={options}
-      />
+      <ResponsiveContainer>
+
+        <BarChart
+          data={data}
+        >
+
+          <CartesianGrid
+            strokeDasharray="3 3"
+          />
+
+          <XAxis
+            dataKey="department"
+          />
+
+          <YAxis />
+
+          <Tooltip />
+
+          <Bar
+            dataKey="salary"
+            radius={[10,10,0,0]}
+          />
+
+        </BarChart>
+
+      </ResponsiveContainer>
 
     </div>
+
   );
+
 }
 
 export default SalaryChart;

@@ -1,127 +1,266 @@
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 function EmployeeTable() {
-  const employees = [
-    {
-      id: 101,
-      firstName: "Prathap",
-      lastName: "B D",
-      designation: "Data Scientist",
-      salary: 700000,
-      department: "AI"
-    },
-    {
-      id: 102,
-      firstName: "Rahul",
-      lastName: "Kumar",
-      designation: "Python Developer",
-      salary: 650000,
-      department: "Development"
-    },
-    {
-      id: 103,
-      firstName: "Sneha",
-      lastName: "Sharma",
-      designation: "HR Manager",
-      salary: 900000,
-      department: "HR"
-    },
-    {
-      id: 104,
-      firstName: "Kiran",
-      lastName: "Patil",
-      designation: "DevOps Engineer",
-      salary: 850000,
-      department: "Cloud"
+
+  const navigate = useNavigate();
+
+  const [employees, setEmployees] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+
+    try {
+
+      const response =
+        await API.get("/employees");
+
+      setEmployees(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
     }
-  ];
+
+  };
+
+  const deleteEmployee = async (id) => {
+
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to delete this employee?"
+      );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      await API.delete(
+        `/employees/${id}`
+      );
+
+      fetchEmployees();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Unable to delete employee"
+      );
+
+    }
+
+  };
+
+  const filteredEmployees =
+    employees.filter((employee) =>
+      employee.name
+        ?.toLowerCase()
+        .includes(search.toLowerCase())
+    );
 
   return (
-    <div className="card">
 
-      <div className="table-header">
+    <>
 
-        <h2>Employee Management</h2>
+      <div className="employee-directory-header">
 
-        <Link
-          to="/employees/add"
+        <div>
+
+          <h2>
+            Employee Directory
+          </h2>
+
+          <p>
+            Search and manage employees
+          </p>
+
+        </div>
+
+        <button
           className="btn"
+          onClick={() =>
+            navigate("/employees/add")
+          }
         >
-          Add Employee
-        </Link>
+          + Add Employee
+        </button>
 
       </div>
 
-      <div className="table-search">
+      <div className="employee-search-box">
 
         <input
           type="text"
-          placeholder="Search Employee..."
-          className="search-box"
+          placeholder="Search employee by name..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
         />
 
       </div>
 
-      <table>
+      <div className="employee-grid-v2">
 
-        <thead>
+        {
 
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Designation</th>
-            <th>Salary</th>
-            <th>Actions</th>
-          </tr>
+          filteredEmployees.length > 0
 
-        </thead>
+            ? filteredEmployees.map(
+                (employee) => (
 
-        <tbody>
+                  <div
+                    className="employee-card-v2"
+                    key={employee.id}
+                  >
 
-          {employees.map((emp) => (
+                    <div className="employee-card-top">
 
-            <tr key={emp.id}>
+                      <div className="employee-avatar">
 
-              <td>{emp.id}</td>
+                        {
+                          employee.name
+                            ?.charAt(0)
+                            .toUpperCase()
+                        }
 
-              <td>
-                {emp.firstName} {emp.lastName}
-              </td>
+                      </div>
 
-              <td>{emp.department}</td>
+                      <div>
 
-              <td>{emp.designation}</td>
+                        <h3>
+                          {employee.name}
+                        </h3>
 
-              <td>
-                ₹ {emp.salary.toLocaleString()}
-              </td>
+                        <p>
+                          {employee.designation}
+                        </p>
 
-              <td>
+                      </div>
 
-                <Link
-                  to={`/employees/edit/${emp.id}`}
-                  className="edit-btn"
-                >
-                  Edit
-                </Link>
+                    </div>
 
-                <button className="delete-btn">
-                  Delete
-                </button>
+                    <div className="employee-details">
 
-              </td>
+                      <div>
 
-            </tr>
+                        <span>
+                          Email
+                        </span>
 
-          ))}
+                        <strong>
+                          {employee.email}
+                        </strong>
 
-        </tbody>
+                      </div>
 
-      </table>
+                      <div>
 
-    </div>
+                        <span>
+                          Department
+                        </span>
+
+                        <strong>
+                          {employee.department}
+                        </strong>
+
+                      </div>
+
+                      <div>
+
+                        <span>
+                          Salary
+                        </span>
+
+                        <strong>
+
+                          ₹
+
+                          {Number(
+                            employee.salary
+                          ).toLocaleString()}
+
+                        </strong>
+
+                      </div>
+
+                    </div>
+
+                    <div
+                      className="
+                      employee-actions-v2
+                      "
+                    >
+
+                      <button
+                        className="
+                        edit-btn
+                        "
+                        onClick={() =>
+                          navigate(
+                            `/employees/edit/${employee.id}`
+                          )
+                        }
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        className="
+                        delete-btn
+                        "
+                        onClick={() =>
+                          deleteEmployee(
+                            employee.id
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )
+              )
+
+            : (
+
+              <div
+                className="
+                dashboard-card
+                "
+              >
+
+                <h3>
+                  No Employees Found
+                </h3>
+
+                <p>
+                  Add your first employee.
+                </p>
+
+              </div>
+
+            )
+
+        }
+
+      </div>
+
+    </>
+
   );
+
 }
 
 export default EmployeeTable;

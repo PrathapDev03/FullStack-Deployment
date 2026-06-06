@@ -1,142 +1,297 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import MainLayout from "../layouts/MainLayout";
+import API from "../services/api";
+
+import {
+  useNotifications
+} from "../context/NotificationContext";
 
 function EditEmployee() {
 
-  const [employee, setEmployee] = useState({
-    employeeId: "101",
-    firstName: "Prathap",
-    lastName: "B D",
-    email: "prathap@gmail.com",
-    phone: "9876543210",
-    department: "AI",
-    designation: "Data Scientist",
-    salary: "700000"
-  });
+  const { id } = useParams();
+
+  const navigate = useNavigate();
+
+  const { addNotification } =
+    useNotifications();
+
+  const [employee, setEmployee] =
+    useState({
+
+      name: "",
+      email: "",
+      department: "",
+      designation: "",
+      salary: ""
+
+    });
+
+  useEffect(() => {
+
+    const fetchEmployee = async () => {
+
+      try {
+
+        const response =
+          await API.get(
+            `/employees/${id}`
+          );
+
+        setEmployee(
+          response.data
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+    fetchEmployee();
+
+  }, [id]);
 
   const handleChange = (e) => {
+
     setEmployee({
+
       ...employee,
-      [e.target.name]: e.target.value
+
+      [e.target.name]:
+      e.target.value
+
     });
+
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit =
+    async (e) => {
 
-    console.log(employee);
+      e.preventDefault();
 
-    alert("Employee Updated Successfully");
-  };
+      try {
+
+        await API.put(
+
+          `/employees/${id}`,
+
+          {
+
+            name:
+              employee.name,
+
+            email:
+              employee.email,
+
+            department:
+              employee.department,
+
+            designation:
+              employee.designation,
+
+            salary:
+              Number(
+                employee.salary
+              )
+
+          }
+
+        );
+
+        addNotification(
+
+          `Employee ${employee.name} Updated Successfully`
+
+        );
+
+        alert(
+          "Employee Updated Successfully"
+        );
+
+        navigate(
+          "/employees"
+        );
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Unable To Update Employee"
+        );
+
+      }
+
+    };
 
   return (
+
     <MainLayout>
 
-      <h1 className="page-title">
-        Edit Employee
-      </h1>
+      <div className="employee-form-page">
 
-      <div className="card employee-form-card">
+        <div className="hero-banner">
 
-        <form onSubmit={handleSubmit}>
+          <h1>
+            Edit Employee
+          </h1>
 
-          <div className="form-grid">
+          <p>
 
-            <div className="form-group">
-              <label>Employee ID</label>
-              <input
-                type="number"
-                name="employeeId"
-                value={employee.employeeId}
-                disabled
-              />
-            </div>
+            Update employee
+            information and
+            save changes to
+            the database.
 
-            <div className="form-group">
-              <label>First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                value={employee.firstName}
-                onChange={handleChange}
-              />
-            </div>
+          </p>
 
-            <div className="form-group">
-              <label>Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={employee.lastName}
-                onChange={handleChange}
-              />
-            </div>
+        </div>
 
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={employee.email}
-                onChange={handleChange}
-              />
-            </div>
+        <div className="form-card">
 
-            <div className="form-group">
-              <label>Phone</label>
-              <input
-                type="text"
-                name="phone"
-                value={employee.phone}
-                onChange={handleChange}
-              />
-            </div>
+          <h2>
+            Employee Information
+          </h2>
 
-            <div className="form-group">
-              <label>Department</label>
-              <input
-                type="text"
-                name="department"
-                value={employee.department}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Designation</label>
-              <input
-                type="text"
-                name="designation"
-                value={employee.designation}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Salary</label>
-              <input
-                type="number"
-                name="salary"
-                value={employee.salary}
-                onChange={handleChange}
-              />
-            </div>
-
-          </div>
-
-          <button
-            type="submit"
-            className="btn"
+          <form
+            onSubmit={
+              handleSubmit
+            }
           >
-            Update Employee
-          </button>
 
-        </form>
+            <div className="form-grid">
+
+              <div className="form-group">
+
+                <label>
+                  Full Name
+                </label>
+
+                <input
+                  type="text"
+                  name="name"
+                  value={
+                    employee.name
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Email
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  value={
+                    employee.email
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Department
+                </label>
+
+                <input
+                  type="text"
+                  name="department"
+                  value={
+                    employee.department
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Designation
+                </label>
+
+                <input
+                  type="text"
+                  name="designation"
+                  value={
+                    employee.designation
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>
+                  Salary
+                </label>
+
+                <input
+                  type="number"
+                  name="salary"
+                  value={
+                    employee.salary
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-submit">
+
+              <button
+                type="submit"
+                className="btn"
+              >
+
+                Update Employee
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
 
       </div>
 
     </MainLayout>
+
   );
+
 }
 
 export default EditEmployee;

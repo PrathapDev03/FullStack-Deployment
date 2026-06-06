@@ -1,49 +1,149 @@
+import { useEffect, useState } from "react";
 import MainLayout from "../layouts/MainLayout";
 import KPICards from "../components/KPICards";
 import SalaryChart from "../components/SalaryChart";
+import API from "../services/api";
 
 function Dashboard() {
+
+  const [metrics, setMetrics] =
+    useState({
+
+      employees: 0,
+      visitors: 0,
+      departments: 0,
+      avg_salary: 0
+
+    });
+
+  useEffect(() => {
+
+    loadDashboard();
+
+  }, []);
+
+  const loadDashboard =
+    async () => {
+
+      try {
+
+        const response =
+          await API.get(
+            "/dashboard"
+          );
+
+        setMetrics(
+          response.data
+        );
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
   return (
+
     <MainLayout>
 
-      <div>
+      <div className="command-center">
 
-        <h1 className="page-title">
-          Dashboard Overview
-        </h1>
+        <div className="page-banner">
+
+          <h1>
+            Workforce Command Center
+          </h1>
+
+          <p>
+
+            Monitor workforce operations,
+            payroll performance,
+            department activities and
+            organizational growth from a
+            centralized control center.
+
+          </p>
+
+        </div>
 
         <KPICards />
 
-        <div className="dashboard-grid">
+        <div className="dashboard-row">
 
-          <div className="dashboard-chart">
+          <div className="dashboard-card">
+
+            <h2>
+              Payroll Analytics
+            </h2>
+
             <SalaryChart />
+
           </div>
 
-          <div className="card">
+          <div className="dashboard-card">
 
-            <h3>Recent Activities</h3>
+            <h2>
+              Live Organization Statistics
+            </h2>
 
-            <div className="activity-list">
+            <div className="stats-list">
 
-              <div className="activity-item">
-                <span className="activity-dot green"></span>
-                Employee Added - Rahul Kumar
+              <div className="stat-row">
+
+                <span>
+                  Total Employees
+                </span>
+
+                <strong>
+                  {metrics.employees}
+                </strong>
+
               </div>
 
-              <div className="activity-item">
-                <span className="activity-dot blue"></span>
-                Salary Updated - Data Team
+              <div className="stat-row">
+
+                <span>
+                  Total Visitors
+                </span>
+
+                <strong>
+                  {metrics.visitors}
+                </strong>
+
               </div>
 
-              <div className="activity-item">
-                <span className="activity-dot orange"></span>
-                New Visitor Registered
+              <div className="stat-row">
+
+                <span>
+                  Departments
+                </span>
+
+                <strong>
+                  {metrics.departments}
+                </strong>
+
               </div>
 
-              <div className="activity-item">
-                <span className="activity-dot red"></span>
-                Department Created - AI Team
+              <div className="stat-row">
+
+                <span>
+                  Average Salary
+                </span>
+
+                <strong>
+
+                  ₹
+
+                  {Number(
+                    metrics.avg_salary
+                  ).toLocaleString()}
+
+                </strong>
+
               </div>
 
             </div>
@@ -52,23 +152,117 @@ function Dashboard() {
 
         </div>
 
-        <div className="card dashboard-summary">
+        <div
+          className="dashboard-row"
+          style={{
+            marginTop: "25px"
+          }}
+        >
 
-          <h3>Company Summary</h3>
+          <div className="dashboard-card">
 
-          <p>
-            Employee Management Portal helps HR teams manage
-            employee records, visitor registrations, salary
-            insights and department analytics through a
-            centralized dashboard.
-          </p>
+            <h2>
+              Recent Workforce Activity
+            </h2>
+
+            <div className="activity-feed">
+
+              <div className="activity-item">
+                Employee records synchronized with database
+              </div>
+
+              <div className="activity-item">
+                Visitor records synchronized with database
+              </div>
+
+              <div className="activity-item">
+                Dashboard connected to backend API
+              </div>
+
+              <div className="activity-item">
+                MySQL statistics loaded successfully
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="dashboard-card">
+
+            <h2>
+              Organization Health
+            </h2>
+
+            <div className="stats-list">
+
+              <div className="stat-row">
+
+                <span>
+                  Database Status
+                </span>
+
+                <strong
+                  className="positive"
+                >
+                  Connected
+                </strong>
+
+              </div>
+
+              <div className="stat-row">
+
+                <span>
+                  Backend API
+                </span>
+
+                <strong
+                  className="positive"
+                >
+                  Active
+                </strong>
+
+              </div>
+
+              <div className="stat-row">
+
+                <span>
+                  Frontend Status
+                </span>
+
+                <strong
+                  className="positive"
+                >
+                  Running
+                </strong>
+
+              </div>
+
+              <div className="stat-row">
+
+                <span>
+                  System Health
+                </span>
+
+                <strong
+                  className="positive"
+                >
+                  100%
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
       </div>
 
     </MainLayout>
+
   );
+
 }
 
 export default Dashboard;

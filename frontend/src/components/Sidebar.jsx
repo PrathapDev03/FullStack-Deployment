@@ -1,62 +1,198 @@
-import { Link } from "react-router-dom";
 import {
-  FaTachometerAlt,
-  FaUsers,
-  FaUserFriends,
+  FaBars,
   FaChartBar,
-  FaSignOutAlt
+  FaHome,
+  FaMoon,
+  FaSignOutAlt,
+  FaSun,
+  FaUsers,
+  FaUserTie,
+  FaCog
 } from "react-icons/fa";
 
+import {
+  NavLink
+} from "react-router-dom";
+
+import {
+  useApp
+} from "../context/AppContext";
+
 function Sidebar() {
+
+  const {
+    sidebarCollapsed,
+    toggleSidebar,
+    darkMode,
+    toggleTheme
+  } = useApp();
+
   return (
-    <div className="sidebar">
 
-    <div className="logo">
-        <h2>EmployeePro</h2>
-        <p>HR Management</p>
-    </div>
+    <div
+      className={
+        sidebarCollapsed
+          ? "sidebar collapsed"
+          : "sidebar"
+      }
+    >
 
-      <ul className="menu">
+      <div>
 
-        <li>
-          <Link to="/dashboard">
-            <FaTachometerAlt />
-            <span>Dashboard</span>
-          </Link>
-        </li>
+        <div className="sidebar-top">
 
-        <li>
-          <Link to="/employees">
+          <button
+            className="collapse-btn"
+            onClick={toggleSidebar}
+          >
+            <FaBars />
+          </button>
+
+          {!sidebarCollapsed && (
+
+            <div className="logo-section">
+
+              <h2 className="logo">
+                EmployeePro
+              </h2>
+
+              <p className="logo-text">
+                Workforce Suite
+              </p>
+
+            </div>
+
+          )}
+
+        </div>
+
+        <div className="menu">
+
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive
+                ? "menu-item active"
+                : "menu-item"
+            }
+          >
+            <FaHome />
+            {!sidebarCollapsed && (
+              <span>Dashboard</span>
+            )}
+          </NavLink>
+
+          <NavLink
+            to="/employees"
+            className={({ isActive }) =>
+              isActive
+                ? "menu-item active"
+                : "menu-item"
+            }
+          >
             <FaUsers />
-            <span>Employees</span>
-          </Link>
-        </li>
+            {!sidebarCollapsed && (
+              <span>Employees</span>
+            )}
+          </NavLink>
 
-        <li>
-          <Link to="/visitors">
-            <FaUserFriends />
-            <span>Visitors</span>
-          </Link>
-        </li>
+          <NavLink
+            to="/visitors"
+            className={({ isActive }) =>
+              isActive
+                ? "menu-item active"
+                : "menu-item"
+            }
+          >
+            <FaUserTie />
+            {!sidebarCollapsed && (
+              <span>Visitors</span>
+            )}
+          </NavLink>
 
-        <li>
-          <Link to="/analytics">
+          <NavLink
+            to="/analytics"
+            className={({ isActive }) =>
+              isActive
+                ? "menu-item active"
+                : "menu-item"
+            }
+          >
             <FaChartBar />
-            <span>Analytics</span>
-          </Link>
-        </li>
+            {!sidebarCollapsed && (
+              <span>Analytics</span>
+            )}
+          </NavLink>
 
-        <li>
-          <Link to="/">
-            <FaSignOutAlt />
-            <span>Logout</span>
-          </Link>
-        </li>
+        </div>
 
-      </ul>
+      </div>
+
+      <div className="sidebar-bottom">
+
+        <button
+          className="theme-btn"
+          onClick={toggleTheme}
+        >
+
+          {
+            darkMode
+              ? <FaSun />
+              : <FaMoon />
+          }
+
+          {!sidebarCollapsed && (
+
+            <span>
+
+              {
+                darkMode
+                  ? "Light Mode"
+                  : "Dark Mode"
+              }
+
+            </span>
+
+          )}
+
+        </button>
+
+        <NavLink
+          to="/settings"
+          className="logout-btn"
+        >
+
+          <FaCog />
+
+          {!sidebarCollapsed && (
+            <span>
+              Settings
+            </span>
+          )}
+
+        </NavLink>
+
+        <NavLink
+          to="/login"
+          className="logout-btn"
+        >
+
+          <FaSignOutAlt />
+
+          {!sidebarCollapsed && (
+            <span>
+              Logout
+            </span>
+          )}
+
+        </NavLink>
+
+      </div>
 
     </div>
+
   );
+
 }
 
 export default Sidebar;
