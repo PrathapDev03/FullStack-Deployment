@@ -2,8 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
 
-  baseURL:
-    "http://13.214.114.68:5000/api"
+  baseURL: "http://Employee-backend-ebs-env.eba-th4sm2f2.ap-southeast-1.elasticbeanstalk.com/api"
 
 });
 
