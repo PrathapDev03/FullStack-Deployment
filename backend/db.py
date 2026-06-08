@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from urllib.parse import quote_plus
 
 DB_USER = "admin"
-DB_PASSWORD = quote_plus("Prathap1@")
+DB_PASSWORD = quote_plus("Prathap121")
 DB_HOST = "employee-db.cbuoa8kc81xo.ap-southeast-1.rds.amazonaws.com"
 DB_PORT = "3306"
 DB_NAME = "employee_management"
