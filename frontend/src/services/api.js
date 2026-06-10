@@ -1,37 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-
-  baseURL: "http://Employee-backend-ebs-env.eba-th4sm2f2.ap-southeast-1.elasticbeanstalk.com/api"
-
+  baseURL: "http://employee-backend-alb-1864446283.ap-southeast-1.elb.amazonaws.com"
 });
-
-API.interceptors.request.use(
-
-  (config) => {
-
-    const token =
-      localStorage.getItem(
-        "token"
-      );
-
-    if (token) {
-
-      config.headers.Authorization =
-        `Bearer ${token}`;
-
-    }
-
-    return config;
-
-  },
-
-  (error) => {
-
-    return Promise.reject(error);
-
-  }
-
-);
 
 export default API;
